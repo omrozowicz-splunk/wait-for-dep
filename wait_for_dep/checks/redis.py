@@ -1,20 +1,10 @@
-from urllib.parse import urlparse
-
-import redis
+from redis.client import StrictRedis
 
 
 def check(url):
-    parsed_url = urlparse(url)
-
-    db_num = 0
-    if parsed_url.path:
-        url_path = parsed_url.path
-        if url_path.startswith("/"):
-            url_path = url_path[1:]
-        db_num = int(url_path)
 
     try:
-        redis.Redis(host=parsed_url.hostname, port=parsed_url.port or 6379, db=db_num)
+        StrictRedis.from_url(url, decode_responses=True)
         return True
     except Exception as e:
         return False
